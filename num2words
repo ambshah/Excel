@@ -1,0 +1,85 @@
+' works in excel 2013 add a module and paste the code below use like an excel function
+
+Function num2words(amount As Double) As String
+Dim paise As Double
+Dim rupees As Double
+Dim paiseinwords As String
+rupees = amount \ 1
+paise = amount - rupees
+
+
+paiseinwords = ""
+
+If paise > 0 Then
+paiseinwords = " and Paise" + getparts(paise * 100)
+End If
+num2words = "Rupees" + getparts(rupees) + paiseinwords + " only"
+num2words = Replace(num2words, "  ", " ")
+End Function
+
+Private Function getparts(amount As Double) As String
+Dim finalval As String
+Dim findmod As Double
+Dim findcount As Double
+finalval = ""
+
+If amount >= 10000000 Then
+ findmod = amount Mod 10000000
+ findcount = amount \ 10000000
+ finalval = finalval + getparts(findcount) + pluralize(" Crore", findcount) + getparts(findmod)
+ GoSub returnval
+End If
+If amount >= 100000 Then
+ findmod = amount Mod 100000
+ findcount = amount \ 100000
+ finalval = finalval + getparts(findcount) + pluralize(" Lac", findcount) + getparts(findmod)
+ GoSub returnval
+ 
+
+End If
+
+If amount >= 1000 Then
+ findmod = amount Mod 1000
+ findcount = amount \ 1000
+ finalval = finalval + getparts(findcount) + " Thousand" + getparts(findmod)
+ 
+ GoSub returnval
+
+End If
+
+If amount >= 100 Then
+ findmod = amount Mod 100
+ findcount = amount \ 100
+ finalval = finalval + getparts(findcount) + " Hundred" + getparts(findmod)
+ GoSub returnval
+End If
+
+If amount >= 20 Then
+ findmod = amount Mod 10
+ findcount = amount \ 10
+ finalval = finalval + Choose(findcount, "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety") + getparts(findmod)
+ GoSub returnval
+End If
+
+If amount >= 10 Then
+ findmod = amount Mod 10
+ findcount = amount \ 10
+ finalval = finalval + Choose(findcount, "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen")
+GoSub returnval
+End If
+
+If amount < 10 Then
+    If amount = 0 Then GoSub returnval
+    findmod = amount
+    finalval = finalval + Choose(amount, "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine")
+    GoSub returnval
+End If
+
+returnval:
+
+getparts = " " + finalval
+End Function
+
+Function pluralize(val As String, count As Double)
+    If count > 1 Then pluralize = val + "s" Else pluralize = val
+End Function
